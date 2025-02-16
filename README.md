@@ -41,30 +41,49 @@ This project solves the problem of digit recognition from handwritten inputs, wh
 * Banks & Financial Institutions – Digitizing handwritten numbers on checks.
 
 
+<img src="handwrittenDigitrec.png" width="500">
 
-Images will make your README look nice!
-Once you upload an image to your repository, you can link link to it like this (replace the URL with file path, if you've uploaded an image to Github.)
-![Cat]()
-
-If you need to resize images, you have to use an HTML tag, like this:
-<img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Sleeping_cat_on_her_back.jpg" width="300">
-
-This is how you create code examples:
+This is a code example in Python:
 ```
-def main():
-   countries = ['Denmark', 'Finland', 'Iceland', 'Norway', 'Sweden']
-   pop = [5615000, 5439000, 324000, 5080000, 9609000]   # not actually needed in this exercise...
-   fishers = [1891, 2652, 3800, 11611, 1757]
+import tensorflow as tf
+from tensorflow import keras
+import numpy as np
 
-   totPop = sum(pop)
-   totFish = sum(fishers)
+# Load MNIST dataset
+mnist = keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-   # write your solution here
+# Normalize data (scale pixel values to 0-1)
+x_train, x_test = x_train / 255.0, x_test / 255.0
 
-   for i in range(len(countries)):
-      print("%s %.2f%%" % (countries[i], 100.0))    # current just prints 100%
+# Reshape to add a channel dimension
+x_train = x_train.reshape(-1, 28, 28, 1)
+x_test = x_test.reshape(-1, 28, 28, 1)
 
-main()
+# Define the CNN model
+model = keras.Sequential([
+    keras.layers.Conv2D(32, (3,3), activation='relu', input_shape=(28,28,1)),
+    keras.layers.MaxPooling2D(2,2),
+    keras.layers.Conv2D(64, (3,3), activation='relu'),
+    keras.layers.MaxPooling2D(2,2),
+    keras.layers.Flatten(),
+    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dense(10, activation='softmax')  # Output layer (10 digits)
+])
+
+# Compile the model
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+# Train the model
+model.fit(x_train, y_train, epochs=5, validation_data=(x_test, y_test))
+
+# Save the model
+model.save("digit_recognizer.h5")
+
+print("Model training complete. Model saved as 'digit_recognizer.h5'.")
+
 ```
 
 
@@ -83,8 +102,6 @@ How could your project grow and become something even more? What kind of skills,
 
 ## Acknowledgments
 
-* list here the sources of inspiration 
-* do not use code, images, data etc. from others without permission
-* when you have permission to use other people's materials, always mention the original creator and the open source / Creative Commons licence they've used
-  <br>For example: [Sleeping Cat on Her Back by Umberto Salvagnin](https://commons.wikimedia.org/wiki/File:Sleeping_cat_on_her_back.jpg#filelinks) / [CC BY 2.0](https://creativecommons.org/licenses/by/2.0)
-* etc
+* ResearchGate
+: [ResearchGate](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.researchgate.net%2Ffigure%2FOur-Digits-task-requires-recognition-of-handwritten-digits-Participants-collect-data_fig4_221518120&psig=AOvVaw2NjbG5jLO2hDsUaGO-5wxt&ust=1739798583180000&source=images&cd=vfe&opi=89978449&ved=0CBcQjhxqFwoTCJisx_ekyIsDFQAAAAAdAAAAABAJ)
+
